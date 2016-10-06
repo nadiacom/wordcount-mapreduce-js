@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr-fr" >
+	<head>
+		<meta charset="utf-8">
+
+		<title>Wordcount program with map and reduce functions implementation</title>
+  </head>
+<body>
+
+<h1>Wordcount - Javascript - MapReduce</h1>
+
+<p id="text"></p>
+
+<script>
+//MAP FUNCTION
+var map= function (key, value, context){
+	//Delete ’ character
+	value =value.replace(/’/g, ' ');
+  //Split by line
+  var my_line = value.split("\n");
+	context.write('<strong>Map result :</strong><br>');
+  //Loop : for each line,
+  for (var j= 0;j<my_line.length;j++){
+  //Output the number of the current line
+  context.write('<strong>Line '+j+':</strong><br>');
+  //Split by word
+  var my_words = my_line[j].split(" ");
+	//Loop on each word :
+  for (var i= 0;i<my_words.length;i++){
+    if(my_words[i] !==""){
+			//Output ("word",1) = mapping
+      context.write( '(' + my_words[i].toLowerCase()+','+1+ ')<br>');
+    }
+  }
+  }
+}
+
+//REDUCE FUNCTION
+var reduce = function (key, values, context){ //exemple : reduce("word",[1,1,1],document)
+  var sum = 0;
+	//Loop on values array, sum the 1
+  for (var i = 0;i<values.length;i++){
+    sum += parseInt(values[i]);
+  }
+	//Output result ("word",3)
+	context.write('<strong><br>Reduce result :</strong><br>');
+  context.write('('+key+','+sum+')');
+}
+var MyTextHtml = "Tristesse<br><br>J’ai perdu ma force et ma vie,<br>Et mes amis et ma gaieté;<br>J’ai perdu jusqu’à la fierté<br>Qui faisait croire à mon génie.<br>Quand j’ai connu la Vérité,<br>J’ai cru que c’était une amie ;<br>Quand je l’ai comprise et sentie,<br>J’en étais déjà dégoûté.<br><br>Et pourtant elle est éternelle,<br>Et ceux qui se sont passés d’elle<br>Ici-bas ont tout ignoré.<br><br>Dieu parle, il faut qu’on lui réponde.<br>Le seul bien qui me reste au monde<br>Est d’avoir quelquefois pleuré.<br><br>Alfred de Musset";
+
+var MyText = "Tristesse\n\nJ’ai perdu ma force et ma vie,\nEt mes amis et ma gaieté;\nJ’ai perdu jusqu’à la fierté\nQui faisait croire à mon génie.\nQuand j’ai connu la Vérité,\nJ’ai cru que c’était une amie ;\nQuand je l’ai comprise et sentie,\nJ’en étais déjà dégoûté.\n\nEt pourtant elle est éternelle,\nEt ceux qui se sont passés d’elle\nIci-bas ont tout ignoré.\n\nDieu parle, il faut qu’on lui réponde.\nLe seul bien qui me reste au monde\nEst d’avoir quelquefois pleuré.\nAlfred de Musset";
+//Print the text
+document.getElementById("text").innerHTML = MyTextHtml;
+
+//Tests
+var testarray = [1,1,1];
+map(1, MyText, document);
+reduce("tristesse",testarray,document);
+
+</script>
+
+</body>
+</html>
